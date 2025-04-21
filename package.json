@@ -1,5 +1,5 @@
 {
-  "name": "my-turborepo",
+  "name": "minbin-dev",
   "private": true,
   "scripts": {
     "build": "turbo run build",
