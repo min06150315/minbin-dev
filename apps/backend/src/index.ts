@@ -8,7 +8,6 @@ dotenv.config();
 
 // Express 앱 인스턴스 생성 및 서버 포트 설정
 const app = express();
-const port = process.env.PORT || 4000;
 
 // 다른 도메인에서 오는 요청 허용 (CORS 설정)
 // app.use(cors());
@@ -17,12 +16,10 @@ const port = process.env.PORT || 4000;
 app.use(express.json());
 
 // 라우터 설정
-app.get('/', (req, res) => {
-  res.send('Hello, Minbin!');
-});
+app.use('/api/posts', postRouter);
 
-app.use('/posts', postRouter);
-
+// 서버 포트 설정
+const port = process.env.PORT || 4000;
 app.listen(port, () => {
   console.log(`Server is running on port http://localhost:${port}`);
 });

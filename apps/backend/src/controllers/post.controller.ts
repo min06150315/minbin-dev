@@ -1,10 +1,15 @@
 import { Request, Response } from 'express';
+import { PrismaClient } from '../generated/prisma';
+import _ from 'lodash';
+
+const prisma = new PrismaClient();
 
 const examplePosts = [
   {
     id: 1,
     title: '첫 번째 포스트',
     content: '첫 번째 포스트 내용',
+    category: 'ReactJS',
     createdAt: new Date(),
     updatedAt: new Date(),
   },
@@ -12,7 +17,30 @@ const examplePosts = [
 
 export const getPosts = async (req: Request, res: Response) => {
   try {
-    res.status(200).json(examplePosts);
+    const { category, search } = req.query;
+
+    // 필터링 조건
+    const filter: any = {};
+
+    // 카테고리 필터링
+    if (category && typeof category == 'string') {
+      filter.category = category;
+    }
+
+    // 검색 필터링 (insensitive 사용해서 대소문자 구분 없이 검색)
+    if (search && typeof search == 'string') {
+      filter.OR = [
+        { title: { contains: search, mode: 'insensitive' } },
+        { content: { contains: search, mode: 'insensitive' } },
+      ];
+    }
+
+    const posts = await prisma.post.findMany({
+      where: filter,
+      orderBy: { createdAt: 'desc' },
+    });
+
+    res.status(200).json(posts);
   } catch (error) {
     res.status(500).json({ message: '포스트 가져오기 실패' });
   }
@@ -20,10 +48,9 @@ export const getPosts = async (req: Request, res: Response) => {
 
 export const getPostById = async (req: Request, res: Response) => {
   try {
-    const post = examplePosts.find((p) => p.id === Number(req.params.id));
-    if (!post) {
-      return res.status(404).json({ message: '포스트를 찾을 수 없습니다.' });
-    }
+    const id = Number(req.params.id);
+    const post = await prisma.post.findUnique({ where: { id } });
+    if (!post) res.status(404).json({ message: '포스트 Not Found' });
     res.status(200).json(post);
   } catch (error) {
     res.status(500).json({ message: '포스트 가져오기 실패' });
@@ -32,32 +59,35 @@ export const getPostById = async (req: Request, res: Response) => {
 
 export const createPost = async (req: Request, res: Response) => {
   try {
-    const { title, content } = req.body;
-    const newPost = {
-      id: Date.now(),
-      title,
-      content,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
-    examplePosts.push(newPost);
+    const { title, content, category } = req.body;
+    const newPost = await prisma.post.create({
+      data: {
+        title,
+        content,
+        category,
+      },
+    });
     res.status(201).json(newPost);
   } catch (error) {
+    console.error(error);
     res.status(500).json({ message: '포스트 생성 실패' });
   }
 };
 
 export const updatePost = async (req: Request, res: Response) => {
   try {
-    const { id, title, content } = req.body;
-    const post = examplePosts.find((p) => p.id === Number(id));
-    if (!post) {
-      return res.status(404).json({ message: '포스트를 찾을 수 없습니다.' });
-    }
-    post.title = title;
-    post.content = content;
-    post.updatedAt = new Date();
-    res.status(200).json(post);
+    const id = Number(req.params.id);
+    const { title, content, category } = req.body;
+
+    const updateData = _.pickBy(
+      _.pick({ title, content, category }),
+      _.identity,
+    );
+    const updatedPost = await prisma.post.update({
+      where: { id },
+      data: updateData,
+    });
+    res.status(200).json(updatedPost);
   } catch (error) {
     res.status(500).json({ message: '포스트 수정 실패' });
   }
@@ -65,12 +95,8 @@ export const updatePost = async (req: Request, res: Response) => {
 
 export const deletePost = async (req: Request, res: Response) => {
   try {
-    const { id } = req.params;
-    const index = examplePosts.findIndex((p) => p.id === Number(id));
-    if (index === -1) {
-      return res.status(404).json({ message: '포스트를 찾을 수 없습니다.' });
-    }
-    examplePosts.splice(index, 1);
+    const id = Number(req.params.id);
+    await prisma.post.delete({ where: { id } });
     res.status(204).send();
   } catch (error) {
     res.status(500).json({ message: '포스트 삭제 실패' });

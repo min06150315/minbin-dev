@@ -1,4 +1,4 @@
-import express, { RequestHandler } from 'express';
+import express from 'express';
 import {
   getPosts,
   getPostById,
@@ -9,10 +9,10 @@ import {
 
 const router = express.Router();
 
-router.get('/', getPosts as RequestHandler);
-router.get('/:id', getPostById as RequestHandler);
-router.post('/', createPost as RequestHandler);
-router.put('/:id', updatePost as RequestHandler);
-router.delete('/:id', deletePost as RequestHandler);
+router.get('/', getPosts);
+router.get('/:id', getPostById);
+router.post('/', createPost);
+router.put('/:id', updatePost);
+router.delete('/:id', deletePost);
 
 export default router;
