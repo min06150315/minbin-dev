@@ -14,10 +14,19 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum PostCategory {
+  ReactJS
+  NextJS
+  TailwindCSS
+  Typescript
+  NodeJS
+}
+
 model Post {
   id        Int      @id @default(autoincrement())
   title     String
   content   String
+  category  PostCategory
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
