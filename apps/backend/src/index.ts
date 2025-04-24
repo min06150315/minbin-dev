@@ -1,6 +1,7 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
+import { swaggerUi, swaggerSpec } from './config/swagger';
 import postRouter from './routes/post.route';
 
 // 환경변수 설정
@@ -17,6 +18,9 @@ app.use(express.json());
 
 // 라우터 설정
 app.use('/api/posts', postRouter);
+
+// Swagger 설정
+app.use('/swagger', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // 서버 포트 설정
 const port = process.env.PORT || 4000;
