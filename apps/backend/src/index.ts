@@ -1,6 +1,6 @@
 import express from 'express';
 import dotenv from 'dotenv';
-// import cors from "cors";
+import cors from 'cors';
 import postRouter from './routes/post.route';
 
 // 환경변수 설정
@@ -10,7 +10,7 @@ dotenv.config();
 const app = express();
 
 // 다른 도메인에서 오는 요청 허용 (CORS 설정)
-// app.use(cors());
+app.use(cors());
 
 // JSON 파싱 미들웨어
 app.use(express.json());
