@@ -1,3 +1,15 @@
+### Frontend
+![](https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white) ![](https://img.shields.io/badge/Typescript-3178C6?style=for-the-badge&logo=typescript&logoColor=white) ![](https://img.shields.io/badge/TailwindCSS-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)
+
+### Backend
+![](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=Node.js&logoColor=white) ![](https://img.shields.io/badge/Express.js-000000?style=for-the-badge&logo=express&logoColor=white) ![](https://img.shields.io/badge/Prisma-2D3748?style=for-the-badge&logo=prisma&logoColor=white)
+
+### Database
+![](https://img.shields.io/badge/Supabase-171717?style=for-the-badge&logo=supabase&logoColor=3ECF8E)
+
+### DevOps
+![](https://img.shields.io/badge/vercel-000000?style=for-the-badge&logo=Vercel&logoColor=white) ![](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white) ![](https://img.shields.io/badge/Amazon&nbsp;EC2-FF9900?style=for-the-badge&logo=amazonec2&logoColor=white) ![](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)
+
 # Turborepo starter
 
 This Turborepo starter is maintained by the Turborepo core team.
