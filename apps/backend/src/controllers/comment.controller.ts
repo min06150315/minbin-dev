@@ -48,6 +48,8 @@ export const createComment = async (
 export const getCommentsByPost = async (req: Request, res: Response) => {
   try {
     const postId = req.params.postId;
+
+    // 댓글 조회
     const comments = await prisma.comment.findMany({
       where: {
         postId: parseInt(postId),
@@ -63,5 +65,61 @@ export const getCommentsByPost = async (req: Request, res: Response) => {
     res.status(200).json(comments);
   } catch (error) {
     res.status(500).json({ error: '댓글 조회 실패' });
+  }
+};
+
+export const updateComment = async (req: Request, res: Response) => {
+  try {
+    const commentId = Number(req.params.commentId);
+    const { content } = req.body;
+
+    // 댓글 조회
+    const comment = await prisma.comment.findUnique({
+      where: { id: commentId },
+    });
+
+    // 댓글이 존재하지 않을 경우
+    if (!comment) {
+      res.status(404).json({ error: '댓글이 존재하지 않습니다.' });
+      return;
+    }
+
+    // 댓글 수정
+    const updatedComment = await prisma.comment.update({
+      where: { id: commentId },
+      data: { content },
+    });
+
+    res.status(200).json(updatedComment);
+  } catch (error) {
+    res.status(500).json({ error: '댓글 수정 실패' });
+  }
+};
+
+export const deleteComment = async (req: Request, res: Response) => {
+  try {
+    const commentId = Number(req.params.commentId);
+
+    // 댓글 조회
+    const comment = await prisma.comment.findUnique({
+      where: { id: commentId },
+    });
+
+    // 댓글이 존재하지 않을 경우
+    if (!comment) {
+      res.status(404).json({ error: '댓글이 존재하지 않습니다.' });
+      return;
+    }
+
+    // 댓글 & 대댓글 삭제
+    await prisma.comment.deleteMany({
+      where: {
+        OR: [{ id: commentId }, { parentId: commentId }],
+      },
+    });
+
+    res.status(200).json({ message: '댓글이 삭제되었습니다.' });
+  } catch (error) {
+    res.status(500).json({ error: '댓글 삭제 실패' });
   }
 };

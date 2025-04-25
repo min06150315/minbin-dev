@@ -96,9 +96,19 @@ export const updatePost = async (req: Request, res: Response) => {
 export const deletePost = async (req: Request, res: Response) => {
   try {
     const id = Number(req.params.id);
+
+    // 게시물 삭제 시 댓글 먼저 삭제
+    await prisma.comment.deleteMany({
+      where: {
+        postId: id,
+      },
+    });
+
+    // 게시물 삭제
     await prisma.post.delete({ where: { id } });
     res.status(204).send();
   } catch (error) {
+    console.error(error);
     res.status(500).json({ message: '포스트 삭제 실패' });
   }
 };
