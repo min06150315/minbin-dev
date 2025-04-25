@@ -4,6 +4,7 @@ import cors from 'cors';
 import { swaggerUi, swaggerSpec } from './config/swagger';
 import postRouter from './routes/post.route';
 import projectRouter from './routes/project.route';
+import commentRouter from './routes/comment.route';
 
 // 환경변수 설정
 dotenv.config();
@@ -20,7 +21,7 @@ app.use(express.json());
 // 라우터 설정
 app.use('/api/posts', postRouter);
 app.use('/api/projects', projectRouter);
-
+app.use('/api/comments', commentRouter);
 // Swagger 설정
 app.use('/swagger', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
