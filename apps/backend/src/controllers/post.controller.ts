@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { PrismaClient } from '../generated/prisma';
 import _ from 'lodash';
+import { AuthenticatedRequest } from '../middlewares/authenticate';
 
 const prisma = new PrismaClient();
 
@@ -70,14 +71,14 @@ export const getPostById = async (req: Request, res: Response) => {
   }
 };
 
-export const createPost = async (req: Request, res: Response) => {
+export const createPost = async (req: AuthenticatedRequest, res: Response) => {
   try {
     const { title, content, category } = req.body;
 
     const userId = req.user?.id;
 
     if (!userId) {
-      res.status(401).json({ message: '인증 헤더가 없습니다.' });
+      res.status(401).json({ message: '인증이 필요합니다.' });
       return;
     }
 
@@ -96,26 +97,54 @@ export const createPost = async (req: Request, res: Response) => {
   }
 };
 
-export const updatePost = async (req: Request, res: Response) => {
+export const updatePost = async (req: AuthenticatedRequest, res: Response) => {
   try {
     const id = Number(req.params.id);
     const { title, content, category } = req.body;
+    const userId = req.user?.id;
 
+    if (!userId) {
+      res.status(401).json({ message: '인증이 필요합니다.' });
+      return;
+    }
+
+    // 포스트 존재 여부와 소유자 확인
+    const post = await prisma.post.findUnique({
+      where: { id },
+    });
+
+    if (!post) {
+      res.status(404).json({ message: '포스트를 찾을 수 없습니다.' });
+      return;
+    }
+
+    if (post.userId !== userId) {
+      res.status(403).json({ message: '권한이 없습니다.' });
+      return;
+    }
+
+    // 업데이트할 데이터 생성
     const updateData = _.pickBy(
-      _.pick({ title, content, category }),
+      {
+        title,
+        content,
+        category,
+      },
       _.identity,
     );
+
     const updatedPost = await prisma.post.update({
       where: { id },
       data: updateData,
     });
     res.status(200).json(updatedPost);
   } catch (error) {
+    console.error(error);
     res.status(500).json({ message: '포스트 수정 실패' });
   }
 };
 
-export const deletePost = async (req: Request, res: Response) => {
+export const deletePost = async (req: AuthenticatedRequest, res: Response) => {
   try {
     const id = Number(req.params.id);
 

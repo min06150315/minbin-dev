@@ -1,13 +1,21 @@
 import { Request, Response } from 'express';
 import { PrismaClient } from '../generated/prisma';
+import { AuthenticatedRequest } from '../middlewares/authenticate';
 
 const prisma = new PrismaClient();
 
 // 포스트에 좋아요 추가 또는 취소
-export const toggleLike = async (req: Request, res: Response) => {
-  const { userId, postId } = req.body;
+export const toggleLike = async (req: AuthenticatedRequest, res: Response) => {
+  const postId = Number(req.params.postId);
 
   try {
+    const userId = req.user?.id;
+
+    if (!userId) {
+      res.status(401).json({ error: '인증이 필요합니다.' });
+      return;
+    }
+
     // 이미 좋아요가 있는지 확인
     const existingLike = await prisma.like.findUnique({
       where: {
@@ -38,7 +46,7 @@ export const toggleLike = async (req: Request, res: Response) => {
 };
 
 // 특정 포스트의 좋아요 조회
-export const getLikes = async (req: Request, res: Response) => {
+export const getLikes = async (req: AuthenticatedRequest, res: Response) => {
   const postId = Number(req.params.postId);
 
   try {

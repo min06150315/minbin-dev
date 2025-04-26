@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { PrismaClient } from '../generated/prisma';
+import { PrismaClient, UserRole } from '../generated/prisma';
 import { hashPassword, comparePassword, generateToken } from '../utils/auth';
 
 const prisma = new PrismaClient();
@@ -22,11 +22,12 @@ export const register = async (req: Request, res: Response) => {
 
     // 회원가입
     const user = await prisma.user.create({
-      data: { email, password: hashedPassword, name },
+      data: { email, password: hashedPassword, name, role: UserRole.USER },
     });
 
     res.status(201).json({ message: '회원가입 성공', userId: user.id });
   } catch (error) {
+    console.error(error);
     res.status(500).json({ message: '회원가입 실패' });
   }
 };
@@ -57,6 +58,7 @@ export const login = async (req: Request, res: Response) => {
     // 로그인 성공 및 토큰 반환
     res.status(200).json({ message: '로그인 성공', token });
   } catch (error) {
+    console.error(error);
     res.status(500).json({ message: '로그인 실패' });
   }
 };

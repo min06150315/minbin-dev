@@ -6,6 +6,8 @@ import {
   updateProject,
   deleteProject,
 } from '../controllers/project.controller';
+import { authenticate } from '../middlewares/authenticate';
+import { authorizeAdmin } from '../middlewares/authorize';
 
 const router = express.Router();
 
@@ -80,7 +82,7 @@ router.get('/:id', getProjectById);
  *       500:
  *         description: 서버 오류
  */
-router.post('/', createProject);
+router.post('/', authenticate, authorizeAdmin, createProject);
 
 /**
  * @swagger
@@ -113,7 +115,7 @@ router.post('/', createProject);
  *       500:
  *         description: 서버 오류
  */
-router.put('/:id', updateProject);
+router.put('/:id', authenticate, authorizeAdmin, updateProject);
 
 /**
  * @swagger
@@ -136,7 +138,7 @@ router.put('/:id', updateProject);
  *       500:
  *         description: 서버 오류
  */
-router.delete('/:id', deleteProject);
+router.delete('/:id', authenticate, authorizeAdmin, deleteProject);
 
 /**
  * @swagger

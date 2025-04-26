@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { PrismaClient } from '../generated/prisma';
+import { AuthenticatedRequest } from '../middlewares/authenticate';
 
 const prisma = new PrismaClient();
 
@@ -12,7 +13,7 @@ export const getUsers = async (req: Request, res: Response) => {
   }
 };
 
-export const getUserById = async (req: Request, res: Response) => {
+export const getUserById = async (req: AuthenticatedRequest, res: Response) => {
   try {
     const id = Number(req.params.id);
     const user = await prisma.user.findUnique({

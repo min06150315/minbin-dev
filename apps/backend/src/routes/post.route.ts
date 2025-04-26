@@ -7,6 +7,7 @@ import {
   deletePost,
 } from '../controllers/post.controller';
 import { authenticate } from '../middlewares/authenticate';
+import { authorizePostOwner } from '../middlewares/authorize';
 
 const router = express.Router();
 
@@ -119,7 +120,7 @@ router.post('/', authenticate, createPost);
  *       404:
  *         description: 포스트를 찾을 수 없음
  */
-router.put('/:id', authenticate, updatePost);
+router.put('/:id', authenticate, authorizePostOwner, updatePost);
 
 /**
  * @swagger
@@ -140,7 +141,7 @@ router.put('/:id', authenticate, updatePost);
  *       404:
  *         description: 포스트를 찾을 수 없음
  */
-router.delete('/:id', authenticate, deletePost);
+router.delete('/:id', authenticate, authorizePostOwner, deletePost);
 
 /**
  * @swagger
