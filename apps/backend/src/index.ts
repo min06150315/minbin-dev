@@ -6,6 +6,8 @@ import postRouter from './routes/post.route';
 import projectRouter from './routes/project.route';
 import commentRouter from './routes/comment.route';
 import likeRouter from './routes/like.route';
+import authRouter from './routes/auth.route';
+import userRouter from './routes/user.route';
 
 // 환경변수 설정
 dotenv.config();
@@ -24,6 +26,8 @@ app.use('/api/posts', postRouter);
 app.use('/api/projects', projectRouter);
 app.use('/api/comments', commentRouter);
 app.use('/api/likes', likeRouter);
+app.use('/api/auth', authRouter);
+app.use('/api/users', userRouter);
 
 // Swagger 설정
 app.use('/swagger', swaggerUi.serve, swaggerUi.setup(swaggerSpec));

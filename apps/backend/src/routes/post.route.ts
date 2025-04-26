@@ -6,6 +6,7 @@ import {
   updatePost,
   deletePost,
 } from '../controllers/post.controller';
+import { authenticate } from '../middlewares/authenticate';
 
 const router = express.Router();
 
@@ -87,7 +88,7 @@ router.get('/:id', getPostById);
  *       400:
  *         description: 잘못된 요청
  */
-router.post('/', createPost);
+router.post('/', authenticate, createPost);
 
 /**
  * @swagger
@@ -118,7 +119,7 @@ router.post('/', createPost);
  *       404:
  *         description: 포스트를 찾을 수 없음
  */
-router.put('/:id', updatePost);
+router.put('/:id', authenticate, updatePost);
 
 /**
  * @swagger
@@ -139,7 +140,7 @@ router.put('/:id', updatePost);
  *       404:
  *         description: 포스트를 찾을 수 없음
  */
-router.delete('/:id', deletePost);
+router.delete('/:id', authenticate, deletePost);
 
 /**
  * @swagger

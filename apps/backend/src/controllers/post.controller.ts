@@ -73,11 +73,20 @@ export const getPostById = async (req: Request, res: Response) => {
 export const createPost = async (req: Request, res: Response) => {
   try {
     const { title, content, category } = req.body;
+
+    const userId = req.user?.id;
+
+    if (!userId) {
+      res.status(401).json({ message: '인증 헤더가 없습니다.' });
+      return;
+    }
+
     const newPost = await prisma.post.create({
       data: {
         title,
         content,
         category,
+        userId,
       },
     });
     res.status(201).json(newPost);
