@@ -49,8 +49,21 @@ export const getPosts = async (req: Request, res: Response) => {
 export const getPostById = async (req: Request, res: Response) => {
   try {
     const id = Number(req.params.id);
-    const post = await prisma.post.findUnique({ where: { id } });
+    const post = await prisma.post.findUnique({
+      where: { id },
+      include: {
+        comments: {
+          where: { parentId: null },
+          include: {
+            replies: true,
+          },
+          orderBy: { createdAt: 'asc' },
+        },
+      },
+    });
+
     if (!post) res.status(404).json({ message: '포스트 Not Found' });
+
     res.status(200).json(post);
   } catch (error) {
     res.status(500).json({ message: '포스트 가져오기 실패' });
