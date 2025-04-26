@@ -3,6 +3,8 @@
     "strict": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "skipLibCheck": true
-  }
+    "skipLibCheck": true,
+    "typeRoots": ["./node_modules/@types", "./apps/backend/src/types"]
+  },
+  "include": ["apps/backend/**/*.ts"]
 }

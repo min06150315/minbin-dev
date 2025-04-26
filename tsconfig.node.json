@@ -6,5 +6,5 @@
     "module": "CommonJS",
     "types": ["node"]
   },
-  "include": ["apps/backend"]
+  "include": ["apps/backend", "apps/backend/src/types"]
 }
