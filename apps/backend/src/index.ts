@@ -5,6 +5,7 @@ import { swaggerUi, swaggerSpec } from './config/swagger';
 import postRouter from './routes/post.route';
 import projectRouter from './routes/project.route';
 import commentRouter from './routes/comment.route';
+import likeRouter from './routes/like.route';
 
 // 환경변수 설정
 dotenv.config();
@@ -22,6 +23,8 @@ app.use(express.json());
 app.use('/api/posts', postRouter);
 app.use('/api/projects', projectRouter);
 app.use('/api/comments', commentRouter);
+app.use('/api/likes', likeRouter);
+
 // Swagger 설정
 app.use('/swagger', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
