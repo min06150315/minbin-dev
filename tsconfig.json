@@ -4,7 +4,12 @@
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
-    "typeRoots": ["./node_modules/@types", "./apps/backend/src/types"]
+    "typeRoots": ["./node_modules/@types", "./apps/backend/src/types"],
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./apps/backend/src/*"],
+      "~/*": ["./apps/frontend/app/*"]
+    }
   },
   "include": ["apps/backend/**/*.ts"]
 }
