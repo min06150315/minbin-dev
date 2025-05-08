@@ -71,12 +71,21 @@ export const createComment = async (
 
 export const getCommentsByPost = async (req: Request, res: Response) => {
   try {
-    const postId = req.params.postId;
+    const postId = Number(req.params.postId);
+
+    const post = await prisma.post.findUnique({
+      where: { id: postId },
+    });
+
+    if (!post) {
+      res.status(404).json({ error: '포스트가 존재하지 않습니다.' });
+      return;
+    }
 
     // 댓글 조회
     const comments = await prisma.comment.findMany({
       where: {
-        postId: parseInt(postId),
+        postId: postId,
         parentId: null,
       },
       include: {
